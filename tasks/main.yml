@@ -1,0 +1,52 @@
+---
+# install
+- name: Install pppoe packages.
+  yum:
+    name: rp-pppoe
+
+# configure
+- name: Copy PPPoE auth config in place.
+  template:
+    src: pap-secrets.j2
+    dest: /etc/ppp/pap-secrets
+    mode: 0600
+
+- name: Copy ppp0 interface config in place.
+  template:
+    src: ifcfg-ppp0.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-ppp0
+
+- name: Copy pppoe poling script in place.
+  copy:
+    src: pppoe-client.sh
+    dest: /opt/pppoe-client.sh
+    mode: 0755
+
+- name: Copy DNS config in place.
+  copy:
+    src: resolv.conf
+    dest: /etc/resolv.conf
+
+- name: Set IP forwarding.
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+
+# service
+- name: Copy pppoe-client.service in place.
+  copy:
+    src: pppoe-client.service
+    dest: /etc/systemd/system/pppoe-client.service
+  register: result
+
+- name: Daemon reload
+  command: systemctl daemon-reload
+  when: result.changed
+
+- name: Ensure pppoe-client is enabled to start at boot.
+  service: name=pppoe-client enabled=yes
+
+- name: Set config to avoid path MTU discovery.
+  command: firewall-cmd --direct --add-passthrough ipv4 -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+  changed_when: false

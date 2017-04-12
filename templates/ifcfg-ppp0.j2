@@ -1,0 +1,31 @@
+# Managed by ansible
+
+USERCTL=no
+BOOTPROTO=dialup
+NAME=DSLppp0
+DEVICE=ppp0
+TYPE=xDSL
+ONBOOT=yes
+PIDFILE=/var/run/pppoe-adsl.pid
+FIREWALL=NONE
+PING=.
+PPPOE_TIMEOUT=80
+LCP_FAILURE=3
+LCP_INTERVAL=20
+CLAMPMSS=1412
+CONNECT_POLL=6
+CONNECT_TIMEOUT=60
+DEFROUTE=yes
+SYNCHRONOUS=no
+ETH={{ pppoe_client_bind_interface }}
+PROVIDER=DSLppp0
+USER={{ pppoe_client_username }}
+PEERDNS=yes
+DEMAND=no
+MTU=1454
+MRU=1454
+ZONE=external
+
+LINUX_PLUGIN=/usr/lib64/pppd/2.4.5/rp-pppoe.so
+
+ip route replace default dev ppp0

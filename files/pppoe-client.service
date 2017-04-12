@@ -1,0 +1,11 @@
+[Unit]
+Description = PPPoE client daemon
+
+[Service]
+ExecStart = /opt/pppoe-client.sh
+ExecReload = /bin/kill -HUP $MAINPID && /sbin/pppoe-stop
+Restart = always
+Type = simple
+
+[Install]
+WantedBy = multi-user.target

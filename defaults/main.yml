@@ -1,0 +1,4 @@
+---
+pppoe_client_bind_interface: None
+pppoe_client_username: None
+pppoe_client_password: None
