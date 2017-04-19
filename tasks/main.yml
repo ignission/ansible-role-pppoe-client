@@ -22,11 +22,6 @@
     dest: /opt/pppoe-client.sh
     mode: 0755
 
-- name: Copy DNS config in place.
-  copy:
-    src: resolv.conf
-    dest: /etc/resolv.conf
-
 - name: Set IP forwarding.
   sysctl:
     name: net.ipv4.ip_forward
